@@ -13,9 +13,3 @@ for question in question_data:
 
 quiz = QuizBrain(question_bank)
 quiz_ui = QuizUI(quiz)
-
-print("You've completed the quiz!")
-if quiz.score == quiz.question_number:
-    print(f"Your final score: {quiz.score}/{quiz.question_number}")
-else:
-    print(f"Your final score: {quiz.score}/{quiz.question_number}")

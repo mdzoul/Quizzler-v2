@@ -15,7 +15,7 @@ class QuizUI:
         self.quiz = quiz
         self.window = Tk()
         self.window.title("Quizzler v2")
-        self.window.config(padx=20, pady=20, bg=THEME_COLOR)
+        self.window.config(padx=20, pady=40, bg=THEME_COLOR)
 
         # Canvas
         self.canvas = Canvas(width=500, height=250, bg="white", highlightthickness=0)
@@ -25,7 +25,7 @@ class QuizUI:
             70, 30,
             text="Q",
             font=("Arial", 20, "bold"),
-            fill=THEME_COLOR
+            fill=THEME_COLOR,
         )
         self.question_text = self.canvas.create_text(
             250, 125,
@@ -34,14 +34,21 @@ class QuizUI:
             font=FONT,
             fill=THEME_COLOR,
         )
-
-        # Score Label
-        self.score_label = Label(
+        self.score_text = self.canvas.create_text(
+            440, 30,
             text=f"Score: {self.quiz.score} / {self.quiz.question_number}",
-            fg="white",
-            bg=THEME_COLOR
+            font=("Arial", 15, "bold"),
+            fill=THEME_COLOR,
         )
-        self.score_label.grid(row=1, column=2)
+
+        # Title Label
+        self.title_label = Label(
+            text="Quizzler v2",
+            fg="white",
+            bg=THEME_COLOR,
+            font=("Arial", 40, "bold")
+        )
+        self.title_label.grid(row=1, column=1, columnspan=2)
 
         # Buttons (True/False)
         true_img = PhotoImage(file="./images/true.png")
@@ -67,20 +74,27 @@ class QuizUI:
     def next_qn(self):
         """Pulls out the next question from QuizBrain class"""
         self.canvas.config(bg="white")
-        self.score_label.config(text=f"Score: {self.quiz.score} / {self.quiz.question_number}")
+        self.canvas.itemconfig(self.score_text, text=f"Score: {self.quiz.score} / {self.quiz.question_number}")
 
         if self.quiz.still_has_questions():
             q_text = self.quiz.next_question()
             self.canvas.itemconfig(self.question_num, text=f"Question {self.quiz.question_number}")
             self.canvas.itemconfig(self.question_text, text=q_text)
         else:
+            self.title_label.config(
+                text=f"Your final score: {self.quiz.score} / {self.quiz.question_number}",
+            )
             self.canvas.itemconfig(
                 self.question_text,
-                text=f"You've completed the quiz! "
-                     f"Your final score is: {self.quiz.score}/{self.quiz.question_number}"
+                text=f"You've completed the quiz!"
+            )
+            self.canvas.create_text(
+                250, 150,
+                text="Click X to exit",
+                font=FONT,
+                fill=THEME_COLOR,
             )
             self.true_btn.config(state="disabled")
-            self.false_btn.config(state="disabled")
 
     def click_true(self):
         """Method for when True button is pressed"""
@@ -88,7 +102,10 @@ class QuizUI:
 
     def click_false(self):
         """Method for when False button is pressed"""
-        self.feedback(self.quiz.check_answer("False"))
+        if self.quiz.still_has_questions():
+            self.feedback(self.quiz.check_answer("False"))
+        else:
+            self.window.destroy()
 
     def feedback(self, is_correct):
         """Gives color feedback based on whether user guess is correct or not"""
