@@ -88,13 +88,14 @@ class QuizUI:
                 self.question_text,
                 text=f"You've completed the quiz!"
             )
-            self.canvas.create_text(
-                250, 150,
-                text="Click X to exit",
-                font=FONT,
-                fill=THEME_COLOR,
-            )
+            # self.canvas.create_text(
+            #     250, 150,
+            #     text="Click X to exit",
+            #     font=FONT,
+            #     fill=THEME_COLOR,
+            # )
             self.true_btn.config(state="disabled")
+            self.false_btn.config(state="disabled")
 
     def click_true(self):
         """Method for when True button is pressed"""
@@ -102,10 +103,7 @@ class QuizUI:
 
     def click_false(self):
         """Method for when False button is pressed"""
-        if self.quiz.still_has_questions():
-            self.feedback(self.quiz.check_answer("False"))
-        else:
-            self.window.destroy()
+        self.feedback(self.quiz.check_answer("False"))
 
     def feedback(self, is_correct):
         """Gives color feedback based on whether user guess is correct or not"""
